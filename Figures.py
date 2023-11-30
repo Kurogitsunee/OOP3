@@ -45,7 +45,7 @@ class Triangle(Figure):
     
     def square(self):
         p = self.perimeter()/2
-        return sqrt(p * (p - side(self.p1, self.p2)) * (p - side(self.p1, self.p3) * (p - side(self.p3, self.p2))))
+        return sqrt(abs(p * (p - side(self.p1, self.p2)) * (p - side(self.p1, self.p3) * (p - side(self.p3, self.p2)))))
     
     def show(self):
         print(f"Triangle is built by points p1({self.p1[0]}; {self.p1[1]}), p2({self.p2[0]}; {self.p2[1]}), p3({self.p3[0]}; {self.p3[1]})")
@@ -81,11 +81,11 @@ class Circle(Figure):
 
 class Rectangle(Figure):
 
-    def __init__(self, p1, p3):
+    def __init__(self, p1, p2, p3, p4):
         self.__p1 = p1
-        self.__p2 = [p1[0], p3[1]]
+        self.__p2 = p2
         self.__p3 = p3
-        self.__p4 = [p3[0], p1[1]]
+        self.__p4 = p4
 
     @property
     def p1(self):
@@ -107,7 +107,7 @@ class Rectangle(Figure):
         return side(self.p1, self.p2) + side(self.p1, self.p4) + side(self.p3, self.p2) + side(self.p3, self.p4)
     
     def square(self):
-        return side(self.p1, self.p2) * side(self.p3, self.p2)
+        return Triangle(self.p1, self.p2, self.p3).square() + Triangle(self.p1, self.p3, self.p4).square()
     
     def show(self):
         print(f"Rectangle is built by points at it's diagonal p1({self.p1[0]}; {self.p1[1]}) and p3({self.p3[0]}; {self.p3[1]}) (points at another diagonal: p2({self.p2[0]}; {self.p2[1]}), p4({self.p4[0]}; {self.p4[1]}))")
@@ -138,9 +138,11 @@ while i < n:
             figures.append(Triangle(point1.coordinates, point2.coordinates, point3.coordinates))
             i += 1
         case "rectangle":
-            point1 = Point(float(input("Write x coordinate for 1st point (1st at diagonal): ")), float(input("Write y coordinate for 1st point (1st at diagonal): ")))
-            point3 = Point(float(input("Write x coordinate for 3rd point (2nd at diagonal): ")), float(input("Write y coordinate for 3rd point (2nd at diagonal): ")))
-            figures.append(Rectangle(point1.coordinates, point3.coordinates))
+            point1 = Point(float(input("Write x coordinate for 1st point: ")), float(input("Write y coordinate for 1st point): ")))
+            point2 = Point(float(input("Write x coordinate for 2nd point: ")), float(input("Write y coordinate for 2nd point: ")))
+            point3 = Point(float(input("Write x coordinate for 3rd point: ")), float(input("Write y coordinate for 3rd point: ")))
+            point4 = Point(float(input("Write x coordinate for 4th point: ")), float(input("Write y coordinate for 4th point: ")))
+            figures.append(Rectangle(point1.coordinates, point2.coordinates,  point3.coordinates, point4.coordinates))
             i += 1
         case "circle":
             center = Point(float(input("Write x coordinate for circle's centre: ")), float(input("Write y coordinate for circle's centre: ")))
