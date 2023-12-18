@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
 from math import pi as pi
 from math import sqrt as sqrt
+
 def side(p1=[0,0], p2=[0,0]):
     return sqrt((p2[0]-p1[0])**2 + ((p2[1]-p1[1])**2))
 
@@ -41,14 +42,14 @@ class Triangle(Figure):
         return self.__p3
     
     def perimeter(self):
-        return side(self.p1, self.p2) + side(self.p1, self.p3) + side(self.p3, self.p2)
+        return side(self.p1.coordinates, self.p2.coordinates) + side(self.p1.coordinates, self.p3.coordinates) + side(self.p3.coordinates, self.p2.coordinates)
     
     def square(self):
         p = self.perimeter()/2
-        return sqrt(abs(p * (p - side(self.p1, self.p2)) * (p - side(self.p1, self.p3) * (p - side(self.p3, self.p2)))))
+        return sqrt(abs(p * (p - side(self.p1.coordinates, self.p2.coordinates)) * (p - side(self.p1.coordinates, self.p3.coordinates) * (p - side(self.p3.coordinates, self.p2.coordinates)))))
     
     def show(self):
-        print(f"Triangle is built by points p1({self.p1[0]}; {self.p1[1]}), p2({self.p2[0]}; {self.p2[1]}), p3({self.p3[0]}; {self.p3[1]})")
+        print(f"Triangle is built by points p1{self.p1}, p2{self.p2}, p3{self.p3}")
         print(f"Triangle's perimeter P = {self.perimeter()}")
         print(f"Triangle's square S = {self.square()}")
 
@@ -68,13 +69,13 @@ class Circle(Figure):
         return self.__r
     
     def perimeter(self):
-        return 2 * pi * side(self.r, self.o)
+        return 2 * pi * side(self.r.coordinates, self.o.coordinates)
     
     def square(self):
-        return pi * side(self.r, self.o)**2
+        return pi * side(self.r.coordinates, self.o.coordinates)**2
     
     def show(self):
-        print(f"Circle with center at point o({self.o[0]}; {self.o[1]}) and radius r = {side(self.r, self.o)}")
+        print(f"Circle with center at point o{self.o} and radius r = {side(self.r.coordinates, self.o.coordinates)}")
         print(f"Circle's perimeter P = {self.perimeter()}")
         print(f"Circle's square S = {self.square()}")
 
@@ -104,25 +105,28 @@ class Rectangle(Figure):
         return self.__p4
     
     def perimeter(self):
-        return side(self.p1, self.p2) + side(self.p1, self.p4) + side(self.p3, self.p2) + side(self.p3, self.p4)
+        return side(self.p1.coordinates, self.p2.coordinates) + side(self.p1.coordinates, self.p4.coordinates) + side(self.p3.coordinates, self.p2.coordinates) + side(self.p3.coordinates, self.p4.coordinates)
     
     def square(self):
         return Triangle(self.p1, self.p2, self.p3).square() + Triangle(self.p1, self.p3, self.p4).square()
     
     def show(self):
-        print(f"Rectangle is built by points at it's diagonal p1({self.p1[0]}; {self.p1[1]}) and p3({self.p3[0]}; {self.p3[1]}) (points at another diagonal: p2({self.p2[0]}; {self.p2[1]}), p4({self.p4[0]}; {self.p4[1]}))")
+        print(f"Rectangle is built by points at it's diagonal p1{self.p1} and p3{self.p3} (points at another diagonal: p2{self.p2}, p4{self.p4})")
         print(f"Rectangle's perimeter P = {self.perimeter()}")
         print(f"Rectangle's square S = {self.square()}")
 
 
 class Point():
 
-    def __init__(self, x, y):
-        self.__coorfinates = [x, y]
+    def __init__(self):
+        self.__coordinates = [float(input("Write x coordinate: ")), float(input("Write y coordinate: "))]
 
     @property
     def coordinates(self):
-        return self.__coorfinates
+        return self.__coordinates
+    
+    def __str__(self) -> str:
+        return f"({self.coordinates[0]}; {self.coordinates[1]})"
     
 
 n = int(input("How many figures want you to create? "))
@@ -132,22 +136,31 @@ while i < n:
     figure_type = input("Write type of figure (triangle, rectangle, circle): ").lower()
     match figure_type:
         case "triangle":
-            point1 = Point(float(input("Write x coordinate for 1st point: ")), float(input("Write y coordinate for 1st point: ")))
-            point2 = Point(float(input("Write x coordinate for 2nd point: ")), float(input("Write y coordinate for 2nd point: ")))
-            point3 = Point(float(input("Write x coordinate for 3rd point: ")), float(input("Write y coordinate for 3rd point: ")))
-            figures.append(Triangle(point1.coordinates, point2.coordinates, point3.coordinates))
+            print("1st point")
+            point1 = Point()
+            print("2nd point")
+            point2 = Point()
+            print("3rd point")
+            point3 = Point()
+            figures.append(Triangle(point1, point2, point3))
             i += 1
         case "rectangle":
-            point1 = Point(float(input("Write x coordinate for 1st point: ")), float(input("Write y coordinate for 1st point): ")))
-            point2 = Point(float(input("Write x coordinate for 2nd point: ")), float(input("Write y coordinate for 2nd point: ")))
-            point3 = Point(float(input("Write x coordinate for 3rd point: ")), float(input("Write y coordinate for 3rd point: ")))
-            point4 = Point(float(input("Write x coordinate for 4th point: ")), float(input("Write y coordinate for 4th point: ")))
-            figures.append(Rectangle(point1.coordinates, point2.coordinates,  point3.coordinates, point4.coordinates))
+            print("1st point")
+            point1 = Point()
+            print("2nd point")
+            point2 = Point()
+            print("3rd point")
+            point3 = Point()
+            print("4th point")
+            point4 = Point()
+            figures.append(Rectangle(point1, point2,  point3, point4))
             i += 1
         case "circle":
-            center = Point(float(input("Write x coordinate for circle's centre: ")), float(input("Write y coordinate for circle's centre: ")))
-            radius = Point(float(input("Write x coordinate for point at circle's radius: ")), float(input("Write y coordinate for point at circle's radius: ")))
-            figures.append(Circle(center.coordinates, radius.coordinates))
+            print("Circle's centre")
+            center = Point()
+            print("Point at circle's radius")
+            radius = Point()
+            figures.append(Circle(center, radius))
             i += 1
         case default:
             print("Unknown figure")
